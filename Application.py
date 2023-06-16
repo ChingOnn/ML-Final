@@ -67,7 +67,7 @@ elif selected_option == "EDA":
     # Display EDA content
     # Add your EDA code here
     st.subheader("Original Dataset")
-    st.write("There is",df.shape[0],"number of rows and", df.shape[1],"numbers of columns in the original dataset retrieve from kaggle.")
+    st.write("There is",initial_df.shape[0],"number of rows and", initial_df.shape[1],"numbers of columns in the original dataset retrieve from kaggle.")
     st.dataframe(initial_df)
 
     # Display the value range of each column
