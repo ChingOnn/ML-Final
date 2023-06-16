@@ -1,5 +1,4 @@
 import streamlit as st
-import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -20,11 +19,8 @@ This app automate the loan eligibility process based on customer detail provided
 """)
 
 #import dataset
-current_directory = os.getcwd()
-file_name = "loan_sanction_train.csv"
-file_path = os.path.join(current_directory, file_name)
-df=pd.read_csv(file_path)
-initial_df=pd.read_csv(file_path)
+df =  pd.read_csv('C:/Users/Limpek/Downloads/loan_sanction_train.csv')
+initial_df = pd.read_csv('C:/Users/Limpek/Downloads/loan_sanction_train.csv')
 
 missing_value = df.isnull()
 
@@ -241,7 +237,7 @@ elif selected_option == "Logistic Regression Prediction":
     st.subheader("Features Selection")
 
     # Perform feature selection based on logistic regression coefficients
-    selector = SelectFromModel(model, threshold=None)
+    selector = SelectFromModel(LogisticRegression())
     selector.fit(X_train, y_train)
 
     # Transform the training and test sets to include only the selected features
@@ -275,6 +271,31 @@ elif selected_option == "Logistic Regression Prediction":
     ax.set_title('Feature Selection - Logistic Regression')
     ax.set_xticklabels(selected_features)
     st.pyplot(fig)
+
+    # Make predictions on the new input with the selected features
+    new_input_selected = selector.transform(new_input)
+    new_predict_selected = model_selected.predict(new_input_selected)
+    st.write("Prediction (after feature selection):", 'Approved' if new_predict_selected == 1 else 'Not Approved')
+
+
+    # Evaluate the model based on test data with selected features
+    y_pred_selected = model_selected.predict(X_test_selected)
+
+    accuracy_selected = accuracy_score(y_test, y_pred_selected)
+    tn_selected, fp_selected, fn_selected, tp_selected = confusion_matrix(y_test, y_pred_selected).ravel()
+    precision_selected = precision_score(y_test, y_pred_selected)
+    recall_selected = recall_score(y_test, y_pred_selected)
+    f1_selected = f1_score(y_test, y_pred_selected)
+
+    st.subheader("Confusion Matrix (after feature selection)")
+    st.write("True Positive:", tp_selected)
+    st.write("False Positive:", fp_selected)
+    st.write("True Negative:", tn_selected)
+    st.write("False Negative:", fn_selected)
+    st.write("Accuracy:", accuracy_selected)
+    st.write("Precision:", precision_selected)
+    st.write("Recall:", recall_selected)
+    st.write("F1-score:", f1_selected)
 
 # KNN Prediction
 elif selected_option == "K-Nearest Neighbors Prediction":
@@ -407,6 +428,29 @@ elif selected_option == "K-Nearest Neighbors Prediction":
     ax.set_xticklabels(X.columns, rotation=90)
     st.pyplot(fig)
 
+    # Initialize and train the K-Nearest Neighbors model with selected features
+    sc_x = StandardScaler()
+    X_train_scaled = sc_x.fit_transform(X_train_selected)
+    X_test_scaled = sc_x.transform(X_test_selected)
 
+    classifier = KNeighborsClassifier(n_neighbors=3)
+    classifier.fit(X_train_scaled, y_train)
 
+    # Evaluate the model based on test data with selected features
+    y_pred_selected = classifier.predict(X_test_scaled)
 
+    accuracy_selected = accuracy_score(y_test, y_pred_selected)
+    tn_selected, fp_selected, fn_selected, tp_selected = confusion_matrix(y_test, y_pred_selected).ravel()
+    precision_selected = precision_score(y_test, y_pred_selected)
+    recall_selected = recall_score(y_test, y_pred_selected)
+    f1_selected = f1_score(y_test, y_pred_selected)
+
+    st.subheader("Confusion Matrix (after feature selection)")
+    st.write("True Positive:", tp_selected)
+    st.write("False Positive:", fp_selected)
+    st.write("True Negative:", tn_selected)
+    st.write("False Negative:", fn_selected)
+    st.write("Accuracy:", accuracy_selected)
+    st.write("Precision:", precision_selected)
+    st.write("Recall:", recall_selected)
+    st.write("F1-score:", f1_selected)
