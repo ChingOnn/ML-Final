@@ -19,8 +19,11 @@ This app automate the loan eligibility process based on customer detail provided
 """)
 
 #import dataset
-df =  pd.read_csv('C:/Users/Limpek/Downloads/loan_sanction_train.csv')
-initial_df = pd.read_csv('C:/Users/Limpek/Downloads/loan_sanction_train.csv')
+current_directory = os.getcwd()
+file_name = "loan_sanction_train.csv"
+file_path = os.path.join(current_directory, file_name)
+df=pd.read_csv(file_path)
+initial_df=pd.read_csv(file_path)
 
 missing_value = df.isnull()
 
